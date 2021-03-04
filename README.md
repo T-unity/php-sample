@@ -1,0 +1,4 @@
+- PHP8.0
+- Nginx:latest
+- MySQL5.7
+- phpMyAdmin
