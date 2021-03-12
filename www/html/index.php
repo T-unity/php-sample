@@ -22,16 +22,25 @@ $message_array = array();
 $success_message = null;
 // エラーメッセージ
 $error_message = array();
+// サニタイズ
+$clean = array();
 
 if( !empty($_POST['btn_submit']) ) {
 	if( $file_handle = fopen( FILENAME, "a") ) {
 
-  // バリデーション
+  // 名前のバリデーション
   if (empty($_POST['view_name'])) {
     $error_message[] = '表示名を入力してください';
+  } else {
+    $clean['view_name'] = htmlspecialchars($_POST['view_name'], ENT_QUOTES);
+    $clean['view_name'] = preg_replace( '/\\r\\n|\\n|\\r/', '', $clean['view_name']);
   }
+  // メッセージのバリデーション
   if (empty($_POST['message'])) {
     $error_message[] = 'メッセージを入力してください';
+  } else {
+    $clean['message'] = htmlspecialchars($_POST['message'], ENT_QUOTES);
+    $clean['message'] = preg_replace( '/\\r\\n|\\n|\\r/', '<br>', $clean['message']);
   }
 
   // エラーメッセージが空の場合に書き込み
@@ -39,7 +48,7 @@ if( !empty($_POST['btn_submit']) ) {
 	    // 書き込み日時を取得
 		$now_date = date("Y-m-d H:i:s");
 		// 書き込むデータを作成
-		$data = "'".$_POST['view_name']."','".$_POST['message']."','".$now_date."'\n";
+		$data = "'".$clean['view_name']."','".$clean['message']."','".$now_date."'\n";
 		// 書き込み
 		fwrite( $file_handle, $data);
 		// ファイルを閉じる
